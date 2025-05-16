@@ -5,6 +5,8 @@ def revisar_logros(user_id):
     mensajes, reacciones, tiempo_ingreso, logros_guardados = obtener_datos(user_id)
     nuevos = []
 
+    if mensajes >= 1:
+        nuevos.append("💬 Mentat desmemoriado")
     if mensajes >= 100:
         nuevos.append("💬 Muad'Dib del Chat")
     if mensajes >= 1000:
