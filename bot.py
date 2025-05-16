@@ -26,6 +26,13 @@ async def asignar_logro(user, logro, bot):
         embed.set_thumbnail(url=user.display_avatar.url)
         await canal.send(embed=embed)
 
+@bot.command(name="resetlogros")
+@commands.has_permissions(administrator=True)
+async def reset_logros(ctx):
+    import db
+    db.resetear_todos_los_logros()
+    await ctx.send("✅ Todos los logros han sido reseteados.")
+
 
 #LOGROS_CHANNEL_ID = 1372577946501644450
 
