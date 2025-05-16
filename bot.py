@@ -12,6 +12,21 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
+async def asignar_logro(user, logro, bot):
+    import db
+    db.registrar_logro(user.id, logro)
+
+    canal = bot.get_channel(LOGROS_CHANNEL_ID)
+    if canal:
+        embed = discord.Embed(
+            title="🏆 ¡Nuevo logro desbloqueado!",
+            description=f"**{user.display_name}** ha desbloqueado:\n**{logro}**",
+            color=discord.Color.orange()
+        )
+        embed.set_thumbnail(url=user.display_avatar.url)
+        await canal.send(embed=embed)
+
+
 #LOGROS_CHANNEL_ID = 1372577946501644450
 
 @bot.event
