@@ -46,4 +46,4 @@ async def logros(ctx):
     else:
         await ctx.send("😢 Aún no has desbloqueado ningún logro.")
 
-bot.run("TU_TOKEN_DEL_BOT")
+bot.run(os.getenv("DISCORD_TOKEN"))
