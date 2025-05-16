@@ -40,9 +40,6 @@ async def reset_usuario(ctx, miembro: discord.Member):
     db.resetear_logros_usuario(miembro.id)
     await ctx.send(f"🔄 Los logros de {miembro.display_name} han sido eliminados.")
 
-
-#LOGROS_CHANNEL_ID = 1372577946501644450
-
 @bot.event
 async def on_ready():
     print(f"Conectado como {bot.user}")
@@ -78,6 +75,7 @@ async def logros(ctx):
     else:
         await ctx.send("😢 Aún no has desbloqueado ningún logro.")
 
-LOGROS_CHANNEL_ID = int(os.getenv("LOGROS_CHANNEL_ID"))
+#LOGROS_CHANNEL_ID = int(os.getenv("LOGROS_CHANNEL_ID"))
+LOGROS_CHANNEL_ID = 1372577946501644450
 
 bot.run(os.getenv("DISCORD_TOKEN"))
