@@ -49,4 +49,6 @@ async def logros(ctx):
     else:
         await ctx.send("😢 Aún no has desbloqueado ningún logro.")
 
+LOGROS_CHANNEL_ID = int(os.getenv("LOGROS_CHANNEL_ID"))
+
 bot.run(os.getenv("DISCORD_TOKEN"))
