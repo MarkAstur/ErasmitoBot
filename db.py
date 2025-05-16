@@ -51,3 +51,10 @@ def resetear_todos_los_logros():
     c.execute("DELETE FROM logros")
     conn.commit()
     conn.close()
+
+def resetear_logros_usuario(user_id):
+    conn = sqlite3.connect("logros.db")
+    c = conn.cursor()
+    c.execute("DELETE FROM logros WHERE user_id = ?", (user_id,))
+    conn.commit()
+    conn.close()
