@@ -1,3 +1,4 @@
+import os
 import discord
 from discord.ext import commands
 from db import actualizar_mensajes, actualizar_reacciones
@@ -46,5 +47,4 @@ async def logros(ctx):
     else:
         await ctx.send("😢 Aún no has desbloqueado ningún logro.")
 
-import os
 bot.run(os.getenv("DISCORD_TOKEN"))
