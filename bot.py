@@ -33,6 +33,13 @@ async def reset_logros(ctx):
     db.resetear_todos_los_logros()
     await ctx.send("✅ Todos los logros han sido reseteados.")
 
+@bot.command(name="resetlogrosusuario")
+@commands.has_permissions(administrator=True)
+async def reset_usuario(ctx, miembro: discord.Member):
+    import db
+    db.resetear_logros_usuario(miembro.id)
+    await ctx.send(f"🔄 Los logros de {miembro.display_name} han sido eliminados.")
+
 
 #LOGROS_CHANNEL_ID = 1372577946501644450
 
