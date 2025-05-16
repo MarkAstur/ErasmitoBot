@@ -12,7 +12,7 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-LOGROS_CHANNEL_ID = 1372577946501644450
+#LOGROS_CHANNEL_ID = 1372577946501644450
 
 @bot.event
 async def on_ready():
