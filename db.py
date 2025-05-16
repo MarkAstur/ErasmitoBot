@@ -44,3 +44,10 @@ def guardar_logros(user_id, nuevos_logros):
         c.execute("UPDATE usuarios SET logros = ? WHERE user_id = ?", (resultado, user_id))
         conn.commit()
     return nuevos
+
+def resetear_todos_los_logros():
+    conn = sqlite3.connect("logros.db")
+    c = conn.cursor()
+    c.execute("DELETE FROM logros")
+    conn.commit()
+    conn.close()
