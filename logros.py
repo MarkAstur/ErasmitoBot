@@ -2,6 +2,7 @@ import sqlite3
 import discord
 import os
 
+#LISTADO DE LOGROS
 LOGROS = [
     #LOGROS MENSAJES
     {
