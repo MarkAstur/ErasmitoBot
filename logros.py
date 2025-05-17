@@ -1,27 +1,74 @@
-from datetime import datetime
-from db import obtener_datos, guardar_logros
+import sqlite3
+import discord
+import os
 
-def revisar_logros(user_id):
-    mensajes, reacciones, tiempo_ingreso, logros_guardados = obtener_datos(user_id)
+LOGROS = [
+    {
+        "nombre": "💬 Muad'Dib del Chat",
+        "condicion": lambda datos: datos["mensajes"] >= 100
+    },
+    {
+        "nombre": "💛 Novat@ en la Prescencia",
+        "condicion": lambda datos: datos["reacciones"] >= 1
+    },
+    {
+        "nombre": "🧠 Mentat del Foro",
+        "condicion": lambda datos: datos["mensajes"] >= 500
+    },
+    {
+        "nombre": "🧠 Mentat desmemoriad@",
+        "condicion": lambda datos: datos["reacciones"] >= 1
+    },
+]
+
+def obtener_datos_usuario(user_id):
+    conn = sqlite3.connect("logros.db")
+    c = conn.cursor()
+    c.execute("SELECT mensajes, reacciones FROM usuarios WHERE user_id = ?", (user_id,))
+    row = c.fetchone()
+    conn.close()
+    if row:
+        return {"mensajes": row[0], "reacciones": row[1]}
+    else:
+        return {"mensajes": 0, "reacciones": 0}
+
+def logros_ya_obtenidos(user_id):
+    conn = sqlite3.connect("logros.db")
+    c = conn.cursor()
+    c.execute("SELECT logro FROM logros WHERE user_id = ?", (user_id,))
+    existentes = set(row[0] for row in c.fetchall())
+    conn.close()
+    return existentes
+
+def registrar_logro(user_id, logro):
+    conn = sqlite3.connect("logros.db")
+    c = conn.cursor()
+    c.execute("INSERT OR IGNORE INTO logros (user_id, logro) VALUES (?, ?)", (user_id, logro))
+    conn.commit()
+    conn.close()
+
+async def asignar_logro(user, _, bot):
+    user_id = user.id
+    datos = obtener_datos_usuario(user_id)
+    existentes = logros_ya_obtenidos(user_id)
     nuevos = []
 
-    if mensajes >= 1:
-        nuevos.append("🧠 Mentat desmemoriad@")
-    if mensajes >= 100:
-        nuevos.append("💬 Muad'Dib del Chat")
-    if mensajes >= 1000:
-        nuevos.append("🧠 Mentat del Foro")
-    if reacciones >= 1:
-        nuevos.append("💛 Novat@ en la Prescencia")
-    if reacciones >= 20:
-        nuevos.append("🎭 Fremen Popular")
-    if tiempo_ingreso:
-        dias = (datetime.now() - datetime.fromisoformat(tiempo_ingreso)).days
-        if dias >= 30:
-            nuevos.append("📅 Fremen del Sietch")
-    if tiempo_ingreso:
-        dias = (datetime.now() - datetime.fromisoformat(tiempo_ingreso)).days
-        if dias >= 1:
-            nuevos.append("📅 Trucha de Arena Recién Nacida")
+    for logro in LOGROS:
+        nombre = logro["nombre"]
+        if nombre not in existentes and logro["condicion"](datos):
+            registrar_logro(user_id, nombre)
+            nuevos.append(nombre)
 
-    return guardar_logros(user_id, nuevos)
+    if nuevos:
+        canal = bot.get_channel(int(os.getenv("LOGROS_CHANNEL_ID")))
+        if canal:
+            for logro in nuevos:
+                embed = discord.Embed(
+                    title="🏆 ¡Nuevo logro desbloqueado!",
+                    description=f"**{user.display_name}** ha conseguido el logro:\n**{logro}**",
+                    color=discord.Color.gold()
+                )
+                embed.set_thumbnail(url=user.display_avatar.url)
+                await canal.send(embed=embed)
+
+    return nuevos  # por si quieres usarlos en otros comandos
