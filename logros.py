@@ -68,20 +68,20 @@ async def asignar_logro(user, _, bot):
     datos = obtener_datos_usuario(user_id)
     existentes = logros_ya_obtenidos(user_id)
     nuevos = []
-
     joined_at = miembro.joined_at
-if joined_at:
-    dias_en_servidor = (discord.utils.utcnow() - joined_at).days
-else:
-    dias_en_servidor = 0
-
-estadisticas["dias_en_servidor"] = dias_en_servidor
 
     for logro in LOGROS:
         nombre = logro["nombre"]
         if nombre not in existentes and logro["condicion"](datos):
             registrar_logro(user_id, nombre)
             nuevos.append(nombre)
+
+    if joined_at:
+    dias_en_servidor = (discord.utils.utcnow() - joined_at).days
+else:
+    dias_en_servidor = 0
+
+estadisticas["dias_en_servidor"] = dias_en_servidor
 
     if nuevos:
         canal = bot.get_channel(int(os.getenv("LOGROS_CHANNEL_ID")))
