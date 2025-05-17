@@ -31,6 +31,10 @@ LOGROS = [
     #LOGROS TIEMPO EN SERVIDOR
     {"nombre": "Arena en los Zapatos - Acabas de llegar a DuneVerso", 
      "condicion": lambda stats: stats.get("dias_en_servidor", 0) >= 0},
+
+    #LOGROS MENCIONES
+    {"nombre": "Usas la Voz de Forma Torpe - Mencionas a un Usuario", 
+     "condicion": lambda stats: stats.get("menciones", 0) >= 1},
 ]
 
 def obtener_datos_usuario(user_id):
