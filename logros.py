@@ -65,6 +65,14 @@ async def asignar_logro(user, _, bot):
     existentes = logros_ya_obtenidos(user_id)
     nuevos = []
 
+    joined_at = miembro.joined_at
+if joined_at:
+    dias_en_servidor = (discord.utils.utcnow() - joined_at).days
+else:
+    dias_en_servidor = 0
+
+estadisticas["dias_en_servidor"] = dias_en_servidor
+
     for logro in LOGROS:
         nombre = logro["nombre"]
         if nombre not in existentes and logro["condicion"](datos):
