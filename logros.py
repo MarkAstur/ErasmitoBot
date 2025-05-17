@@ -77,7 +77,7 @@ async def asignar_logro(user, _, bot):
             nuevos.append(nombre)
 
     if joined_at:
-    dias_en_servidor = (discord.utils.utcnow() - joined_at).days
+        dias_en_servidor = (discord.utils.utcnow() - joined_at).days
 else:
     dias_en_servidor = 0
 
