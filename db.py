@@ -48,6 +48,14 @@ def actualizar_reacciones(user_id):
     conn.commit()
     conn.close()
 
+def incrementar_menciones(usuario_id):
+    con = sqlite3.connect("logros.db")
+    cur = con.cursor()
+    cur.execute("INSERT OR IGNORE INTO estadisticas (usuario_id, menciones) VALUES (?, 0)", (usuario_id,))
+    cur.execute("UPDATE estadisticas SET menciones = menciones + 1 WHERE usuario_id = ?", (usuario_id,))
+    con.commit()
+    con.close()
+
 def resetear_todos_los_logros():
     conn = sqlite3.connect("logros.db")
     c = conn.cursor()
