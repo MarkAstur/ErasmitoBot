@@ -58,13 +58,25 @@ async def on_message(message):
     await bot.process_commands(message)
 
 @bot.event
-async def on_reaction_add(reaction, user):
-    if user.bot:
+async def on_raw_reaction_add(payload):
+    if payload.user_id == bot.user.id:
         return
+
+    guild = bot.get_guild(payload.guild_id)
+    user = guild.get_member(payload.user_id)
+
+    if user is None or user.bot:
+        return
+
     actualizar_reacciones(user.id)
     nuevos = revisar_logros(user.id)
+
     if nuevos:
-        await reaction.message.channel.send(f"🎖️ {user.mention} ha desbloqueado: {', '.join(nuevos)}")
+        # Obtener el canal y el mensaje desde el payload
+        channel = bot.get_channel(payload.channel_id)
+        if channel:
+            message = await channel.fetch_message(payload.message_id)
+            await channel.send(f"🎖️ {user.mention} ha desbloqueado: {', '.join(nuevos)}")
 
 @bot.command()
 async def logros(ctx):
