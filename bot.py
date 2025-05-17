@@ -1,59 +1,34 @@
-import os
+from db import iniciar_db
+iniciar_db()
 import discord
 from discord.ext import commands
-from db import actualizar_mensajes, actualizar_reacciones
-from logros import revisar_logros
+import os
+from db import incrementar_mensajes, actualizar_reacciones, revisar_logros
+from logros import asignar_logro
 
 intents = discord.Intents.default()
-intents.messages = True
-intents.reactions = True
-intents.members = True
 intents.message_content = True
+intents.members = True
+intents.reactions = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-async def asignar_logro(user, logro, bot):
-    import db
-    db.registrar_logro(user.id, logro)
-
-    canal = bot.get_channel(LOGROS_CHANNEL_ID)
-    if canal:
-        embed = discord.Embed(
-            title="🏆 ¡Nuevo logro desbloqueado!",
-            description=f"**{user.display_name}** ha desbloqueado:\n**{logro}**",
-            color=discord.Color.orange()
-        )
-        embed.set_thumbnail(url=user.display_avatar.url)
-        await canal.send(embed=embed)
-
-@bot.command(name="resetlogros")
-@commands.has_permissions(administrator=True)
-async def reset_logros(ctx):
-    import db
-    db.resetear_todos_los_logros()
-    await ctx.send("✅ Todos los logros han sido reseteados.")
-
-@bot.command(name="resetlogrosusuario")
-@commands.has_permissions(administrator=True)
-async def reset_usuario(ctx, miembro: discord.Member):
-    import db
-    db.resetear_logros_usuario(miembro.id)
-    await ctx.send(f"🔄 Los logros de {miembro.display_name} han sido eliminados.")
+LOGROS_CHANNEL_ID = int(os.getenv("LOGROS_CHANNEL_ID"))
 
 @bot.event
 async def on_ready():
-    print(f"Conectado como {bot.user}")
+    print(f"✅ Bot conectado como {bot.user}")
 
 @bot.event
 async def on_message(message):
     if message.author.bot:
         return
 
-    user_id = message.author.id
-    actualizar_mensajes(user_id)
-    nuevos = revisar_logros(user_id)
-    if nuevos:
-        await message.channel.send(f"🎖️ {message.author.mention} ha desbloqueado: {', '.join(nuevos)}")
+    total = incrementar_mensajes(message.author.id)
+    nuevos = revisar_logros(message.author.id)
+
+    if 100 in total and "Enviado 100 mensajes" in nuevos:
+        await asignar_logro(message.author, "Enviado 100 mensajes", bot)
 
     await bot.process_commands(message)
 
@@ -72,22 +47,22 @@ async def on_raw_reaction_add(payload):
     nuevos = revisar_logros(user.id)
 
     if nuevos:
-        # Obtener el canal y el mensaje desde el payload
         channel = bot.get_channel(payload.channel_id)
         if channel:
-            message = await channel.fetch_message(payload.message_id)
             await channel.send(f"🎖️ {user.mention} ha desbloqueado: {', '.join(nuevos)}")
 
-@bot.command()
-async def logros(ctx):
-    from db import obtener_datos
-    datos = obtener_datos(ctx.author.id)
-    if datos and datos[3]:
-        await ctx.send(f"🏆 {ctx.author.mention}, tus logros: {datos[3]}")
-    else:
-        await ctx.send("😢 Aún no has desbloqueado ningún logro.")
+@bot.command(name="resetlogros")
+@commands.has_permissions(administrator=True)
+async def reset_logros(ctx):
+    from db import resetear_todos_los_logros
+    resetear_todos_los_logros()
+    await ctx.send("🔄 Todos los logros han sido reiniciados.")
 
-#LOGROS_CHANNEL_ID = int(os.getenv("LOGROS_CHANNEL_ID"))
-LOGROS_CHANNEL_ID = 1372577946501644450
+@bot.command(name="resetusuario")
+@commands.has_permissions(administrator=True)
+async def reset_usuario(ctx, miembro: discord.Member):
+    from db import resetear_logros_usuario
+    resetear_logros_usuario(miembro.id)
+    await ctx.send(f"🔄 Logros reseteados para {miembro.display_name}.")
 
 bot.run(os.getenv("DISCORD_TOKEN"))
