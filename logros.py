@@ -44,13 +44,13 @@ LOGROS = [
 def obtener_datos_usuario(user_id):
     conn = sqlite3.connect("logros.db")
     c = conn.cursor()
-    c.execute("SELECT mensajes, reacciones FROM usuarios WHERE user_id = ?", (user_id,))
+    c.execute("SELECT mensajes, reacciones, menciones FROM usuarios WHERE user_id = ?", (user_id,))
     row = c.fetchone()
     conn.close()
     if row:
-        return {"mensajes": row[0], "reacciones": row[1]}
+        return {"mensajes": row[0], "reacciones": row[1], "menciones": row[2] if row[2] is not None else 0}
     else:
-        return {"mensajes": 0, "reacciones": 0}
+        return {"mensajes": 0, "reacciones": 0, "menciones": 0}
 
 def logros_ya_obtenidos(user_id):
     conn = sqlite3.connect("logros.db")
