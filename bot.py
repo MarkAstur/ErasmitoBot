@@ -37,6 +37,20 @@ async def on_raw_reaction_add(payload):
         actualizar_reacciones(user.id)
         await asignar_logro(user, None, bot)
 
+@bot.event
+async def on_message(message):
+    if message.author.bot:
+        return
+
+    incrementar_mensajes(message.author.id)
+
+    if message.mentions:
+        from db import incrementar_menciones
+        incrementar_menciones(message.author.id)
+
+    await asignar_logro(message.author, None, bot)
+    await bot.process_commands(message)
+
 @bot.command(name="resetlogros")
 @commands.has_permissions(administrator=True)
 async def reset_logros(ctx):
