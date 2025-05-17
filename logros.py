@@ -16,6 +16,7 @@ LOGROS = [
         "nombre": "Enviado 500 mensajes",
         "condicion": lambda datos: datos["mensajes"] >= 500
     },
+    
     #LOGROS REACCIONES
     {
         "nombre": "Primera reacción",
@@ -25,6 +26,10 @@ LOGROS = [
         "nombre": "10 reacciones dadas",
         "condicion": lambda datos: datos["reacciones"] >= 10
     },
+    
+    #LOGROS TIEMPO EN SERVIDOR
+    {"nombre": "Arena en los Zapatos - Acabas de llegar a DuneVerso", 
+     "condicion": lambda stats: stats.get("dias_en_servidor", 0) >= 1},
 ]
 
 def obtener_datos_usuario(user_id):
