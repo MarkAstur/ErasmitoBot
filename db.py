@@ -1,49 +1,79 @@
 import sqlite3
 
-conn = sqlite3.connect("logros.db")
-c = conn.cursor()
-
-c.execute('''
-CREATE TABLE IF NOT EXISTS usuarios (
-    user_id INTEGER PRIMARY KEY,
-    mensajes INTEGER DEFAULT 0,
-    reacciones INTEGER DEFAULT 0,
-    tiempo_ingreso TEXT,
-    logros TEXT DEFAULT ''
-)
-''')
-
-conn.commit()
-
-def registrar_usuario(user_id):
-    c.execute("SELECT 1 FROM usuarios WHERE user_id = ?", (user_id,))
-    if not c.fetchone():
-        c.execute("INSERT INTO usuarios (user_id, tiempo_ingreso) VALUES (?, datetime('now'))", (user_id,))
-        conn.commit()
-
-def actualizar_mensajes(user_id):
-    registrar_usuario(user_id)
-    c.execute("UPDATE usuarios SET mensajes = mensajes + 1 WHERE user_id = ?", (user_id,))
+def iniciar_db():
+    conn = sqlite3.connect("logros.db")
+    c = conn.cursor()
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS usuarios (
+            user_id INTEGER PRIMARY KEY,
+            mensajes INTEGER DEFAULT 0,
+            reacciones INTEGER DEFAULT 0
+        )
+    """)
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS logros (
+            user_id INTEGER,
+            logro TEXT,
+            PRIMARY KEY (user_id, logro)
+        )
+    """)
     conn.commit()
+    conn.close()
+
+def incrementar_mensajes(user_id):
+    conn = sqlite3.connect("logros.db")
+    c = conn.cursor()
+    c.execute("SELECT mensajes FROM usuarios WHERE user_id = ?", (user_id,))
+    row = c.fetchone()
+    if row:
+        nuevos = row[0] + 1
+        c.execute("UPDATE usuarios SET mensajes = ? WHERE user_id = ?", (nuevos, user_id))
+    else:
+        nuevos = 1
+        c.execute("INSERT INTO usuarios (user_id, mensajes) VALUES (?, ?)", (user_id, nuevos))
+    conn.commit()
+    conn.close()
+    return nuevos
 
 def actualizar_reacciones(user_id):
-    registrar_usuario(user_id)
-    c.execute("UPDATE usuarios SET reacciones = reacciones + 1 WHERE user_id = ?", (user_id,))
+    conn = sqlite3.connect("logros.db")
+    c = conn.cursor()
+    c.execute("SELECT reacciones FROM usuarios WHERE user_id = ?", (user_id,))
+    row = c.fetchone()
+    if row:
+        nuevos = row[0] + 1
+        c.execute("UPDATE usuarios SET reacciones = ? WHERE user_id = ?", (nuevos, user_id))
+    else:
+        nuevos = 1
+        c.execute("INSERT INTO usuarios (user_id, reacciones) VALUES (?, ?)", (user_id, nuevos))
     conn.commit()
+    conn.close()
 
-def obtener_datos(user_id):
-    c.execute("SELECT mensajes, reacciones, tiempo_ingreso, logros FROM usuarios WHERE user_id = ?", (user_id,))
-    return c.fetchone()
+def revisar_logros(user_id):
+    conn = sqlite3.connect("logros.db")
+    c = conn.cursor()
+    nuevos_logros = []
 
-def guardar_logros(user_id, nuevos_logros):
-    _, _, _, logros_actuales = obtener_datos(user_id)
-    todos = logros_actuales.split(",") if logros_actuales else []
-    nuevos = [l for l in nuevos_logros if l not in todos]
-    if nuevos:
-        resultado = ",".join(todos + nuevos)
-        c.execute("UPDATE usuarios SET logros = ? WHERE user_id = ?", (resultado, user_id))
-        conn.commit()
-    return nuevos
+    c.execute("SELECT mensajes, reacciones FROM usuarios WHERE user_id = ?", (user_id,))
+    datos = c.fetchone()
+    if datos:
+        mensajes, reacciones = datos
+
+        # Lógica de logros
+        c.execute("SELECT logro FROM logros WHERE user_id = ?", (user_id,))
+        existentes = set(r[0] for r in c.fetchall())
+
+        if mensajes >= 100 and "Enviado 100 mensajes" not in existentes:
+            nuevos_logros.append("Enviado 100 mensajes")
+        if reacciones >= 1 and "Primera reacción" not in existentes:
+            nuevos_logros.append("Primera reacción")
+
+        for logro in nuevos_logros:
+            c.execute("INSERT INTO logros (user_id, logro) VALUES (?, ?)", (user_id, logro))
+
+    conn.commit()
+    conn.close()
+    return nuevos_logros
 
 def resetear_todos_los_logros():
     conn = sqlite3.connect("logros.db")
