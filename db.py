@@ -8,6 +8,8 @@ def iniciar_db():
             user_id INTEGER PRIMARY KEY,
             mensajes INTEGER DEFAULT 0,
             reacciones INTEGER DEFAULT 0
+            menciones INTEGER DEFAULT 0,
+            tiempo_total INTEGER DEFAULT 0
         )
     """)
     c.execute("""
