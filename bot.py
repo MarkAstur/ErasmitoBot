@@ -17,15 +17,6 @@ async def on_ready():
     print(f"✅ Bot conectado como {bot.user}")
 
 @bot.event
-async def on_message(message):
-    if message.author.bot:
-        return
-
-    incrementar_mensajes(message.author.id)
-    await asignar_logro(message.author, None, bot)
-    await bot.process_commands(message)
-
-@bot.event
 async def on_raw_reaction_add(payload):
     if payload.user_id == bot.user.id:
         return
