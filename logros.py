@@ -3,17 +3,23 @@ import discord
 import os
 
 LOGROS = [
+    #LOGROS MENSAJES
+    {
+        "nombre": "Enviado 1 mensaje",
+        "condicion": lambda datos: datos["mensajes"] >= 1
+    },
     {
         "nombre": "Enviado 100 mensajes",
         "condicion": lambda datos: datos["mensajes"] >= 100
     },
     {
-        "nombre": "Primera reacción",
-        "condicion": lambda datos: datos["reacciones"] >= 1
-    },
-    {
         "nombre": "Enviado 500 mensajes",
         "condicion": lambda datos: datos["mensajes"] >= 500
+    },
+    #LOGROS REACCIONES
+    {
+        "nombre": "Primera reacción",
+        "condicion": lambda datos: datos["reacciones"] >= 1
     },
     {
         "nombre": "10 reacciones dadas",
