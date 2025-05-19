@@ -105,7 +105,6 @@ async def ver_stats(ctx, miembro: discord.Member = None):
     embed.set_thumbnail(url=miembro.display_avatar.url)
     await ctx.send(embed=embed)
 
-
 @bot.command(name="canallogros")
 @commands.has_permissions(administrator=True)
 async def canallogros(ctx):
