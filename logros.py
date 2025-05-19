@@ -4,12 +4,16 @@ import discord
 import os
 
 LOGROS = [
-    {"nombre": "Enviado 1 mensaje", "condicion": lambda d: d["mensajes"] >= 1, "imagen": "user.display_avatar.url"},
+    #LOGROS MENSAJES
+    {"nombre": "Trucha de Arena Recién Nacida - Enviado tu primer Mensaje", "condicion": lambda d: d["mensajes"] >= 1, "imagen": "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/1689500/c3302e073a99fc5d38642be124c5364dcd8db2a5.jpg"},
     {"nombre": "Enviado 100 mensajes", "condicion": lambda d: d["mensajes"] >= 100, "imagen": "user.display_avatar.url"},
     {"nombre": "Enviado 500 mensajes", "condicion": lambda d: d["mensajes"] >= 500, "imagen": "user.display_avatar.url"},
+    #LOGROS REACCIONES
     {"nombre": "Mentat Desmemoriad@ - Primera reacción", "condicion": lambda d: d["reacciones"] >= 1, "imagen": "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/1689500/4117a9df617f48023467e59318ac6cbb37c68dbe.jpg"},
     {"nombre": "10 reacciones dadas", "condicion": lambda d: d["reacciones"] >= 10, "imagen": "user.display_avatar.url"},
+    #LOGROS TIEMPO
     {"nombre": "Arena en los Zapatos - Acabas de llegar a DuneVerso", "condicion": lambda d: d.get("dias_en_servidor", 0) >= 0, "imagen": "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/1689500/43a74dfebf1567ec5408dc15dd2e2f94153fda85.jpg"},
+    #LOGROS MENCIONES
     {"nombre": "Novato de la Voz - Mencionas a un Usuario", "condicion": lambda d: d.get("menciones", 0) >= 1, "imagen": "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/1689500/05f9c48a93e12754a31d03a1f1f52a4cbc254eb1.jpg"},
 ]
 
