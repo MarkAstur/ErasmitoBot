@@ -70,4 +70,18 @@ async def canallogros(ctx):
     else:
         await ctx.send(f"✅ Canal de logros ya existe: {canal.mention}")
 
+@bot.command(name="verstats")
+async def ver_stats(ctx, miembro: discord.Member = None):
+    from logros import obtener_datos_usuario
+    miembro = miembro or ctx.author
+    datos = obtener_datos_usuario(miembro.id)
+
+    await ctx.send(
+        f"📊 Estadísticas de **{miembro.display_name}**:\n"
+        f"- Mensajes: {datos['mensajes']}\n"
+        f"- Reacciones: {datos['reacciones']}\n"
+        f"- Menciones: {datos['menciones']}"
+    )
+
+
 bot.run(os.getenv("DISCORD_TOKEN"))
