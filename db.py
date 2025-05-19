@@ -3,6 +3,8 @@ import sqlite3
 def iniciar_db():
     conn = sqlite3.connect("logros.db")
     c = conn.cursor()
+    
+    # Crear tabla usuarios
     c.execute("""
         CREATE TABLE IF NOT EXISTS usuarios (
             user_id INTEGER PRIMARY KEY,
@@ -10,11 +12,17 @@ def iniciar_db():
             reacciones INTEGER DEFAULT 0,
             tiempo_total INTEGER DEFAULT 0
         )
+    """)
+
+    # Crear tabla estadisticas
+    c.execute("""
         CREATE TABLE IF NOT EXISTS estadisticas (
             usuario_id INTEGER PRIMARY KEY,
             menciones INTEGER DEFAULT 0
-);
+        )
     """)
+
+    # Crear tabla logros
     c.execute("""
         CREATE TABLE IF NOT EXISTS logros (
             user_id INTEGER,
@@ -22,6 +30,7 @@ def iniciar_db():
             PRIMARY KEY (user_id, logro)
         )
     """)
+
     conn.commit()
     conn.close()
 
