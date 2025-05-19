@@ -58,6 +58,21 @@ async def reset_usuario(ctx, miembro: discord.Member):
     resetear_estadisticas_usuario(miembro.id)
     await ctx.send(f"🔄 Logros y estadísticas reseteadas para {miembro.display_name}.")
 
+@bot.command(name="verestadisticas")
+async def ver_estadisticas(ctx, miembro: discord.Member):
+    import sqlite3
+    conn = sqlite3.connect("logros.db")
+    c = conn.cursor()
+    c.execute("SELECT * FROM estadisticas WHERE usuario_id = ?", (miembro.id,))
+    row = c.fetchone()
+    conn.close()
+    
+    if row:
+        await ctx.send(f"📊 Estadísticas de {miembro.display_name}: menciones = {row[1]}")
+    else:
+        await ctx.send(f"❌ No hay estadísticas registradas para {miembro.display_name}.")
+
+
 @bot.command(name="canallogros")
 @commands.has_permissions(administrator=True)
 async def canallogros(ctx):
