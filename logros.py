@@ -65,8 +65,7 @@ async def asignar_logro(user, _, bot):
             for logro in nuevos:
                 embed = discord.Embed(
                     title="🏆 ¡Nuevo logro desbloqueado!",
-                    description=f"**{user.display_name}** ha conseguido el logro:
-**{logro}**",
+                    description=f"**{user.display_name}** ha conseguido el logro:**{logro}**",
                     color=discord.Color.gold()
                 )
                 embed.set_thumbnail(url=user.display_avatar.url)
