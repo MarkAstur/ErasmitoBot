@@ -58,19 +58,52 @@ async def reset_usuario(ctx, miembro: discord.Member):
     resetear_estadisticas_usuario(miembro.id)
     await ctx.send(f"🔄 Logros y estadísticas reseteadas para {miembro.display_name}.")
 
-@bot.command(name="verestadisticas")
-async def ver_estadisticas(ctx, miembro: discord.Member):
-    import sqlite3
+@bot.command(name="verlogros")
+async def ver_logros(ctx, miembro: discord.Member = None):
+    miembro = miembro or ctx.author
     conn = sqlite3.connect("logros.db")
     c = conn.cursor()
-    c.execute("SELECT * FROM estadisticas WHERE usuario_id = ?", (miembro.id,))
-    row = c.fetchone()
+    c.execute("SELECT logro FROM logros WHERE user_id = ?", (miembro.id,))
+    logros = [row[0] for row in c.fetchall()]
     conn.close()
-    
-    if row:
-        await ctx.send(f"📊 Estadísticas de {miembro.display_name}: menciones = {row[1]}")
+
+    if logros:
+        descripcion = "\n".join(f"🏆 {logro}" for logro in logros)
     else:
-        await ctx.send(f"❌ No hay estadísticas registradas para {miembro.display_name}.")
+        descripcion = "Este usuario aún no ha desbloqueado logros."
+
+    embed = discord.Embed(
+        title=f"Logros de {miembro.display_name}",
+        description=descripcion,
+        color=discord.Color.blurple()
+    )
+    embed.set_thumbnail(url=miembro.display_avatar.url)
+    await ctx.send(embed=embed)
+
+@bot.command(name="verstats")
+async def ver_stats(ctx, miembro: discord.Member = None):
+    miembro = miembro or ctx.author
+    conn = sqlite3.connect("logros.db")
+    c = conn.cursor()
+    c.execute("SELECT mensajes, reacciones FROM usuarios WHERE user_id = ?", (miembro.id,))
+    usuario = c.fetchone()
+    mensajes = usuario[0] if usuario else 0
+    reacciones = usuario[1] if usuario else 0
+
+    c.execute("SELECT menciones FROM estadisticas WHERE usuario_id = ?", (miembro.id,))
+    estadisticas = c.fetchone()
+    menciones = estadisticas[0] if estadisticas else 0
+    conn.close()
+
+    embed = discord.Embed(
+        title=f"📈 Estadísticas de {miembro.display_name}",
+        color=discord.Color.green()
+    )
+    embed.add_field(name="📨 Mensajes", value=mensajes, inline=True)
+    embed.add_field(name="👍 Reacciones dadas", value=reacciones, inline=True)
+    embed.add_field(name="📣 Menciones", value=menciones, inline=True)
+    embed.set_thumbnail(url=miembro.display_avatar.url)
+    await ctx.send(embed=embed)
 
 
 @bot.command(name="canallogros")
