@@ -10,7 +10,7 @@ LOGROS = [
     {"nombre": "Enviado 500 mensajes", "condicion": lambda d: d["mensajes"] >= 500, "imagen": "user.display_avatar.url"},
     #LOGROS REACCIONES
     {"nombre": "Mentat Desmemoriad@ - Primera reacción", "condicion": lambda d: d["reacciones"] >= 1, "imagen": "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/1689500/4117a9df617f48023467e59318ac6cbb37c68dbe.jpg"},
-    {"nombre": "10 reacciones dadas", "condicion": lambda d: d["reacciones"] >= 10, "imagen": "user.display_avatar.url"},
+    {"nombre": "10 reacciones dadas", "condicion": lambda d: d["reacciones"] >= 10, "imagen": "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/1689500/4117a9df617f48023467e59318ac6cbb37c68dbe.jpg"},
     #LOGROS TIEMPO
     {"nombre": "Arena en los Zapatos - Acabas de llegar a DuneVerso", "condicion": lambda d: d.get("dias_en_servidor", 0) >= 0, "imagen": "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/1689500/43a74dfebf1567ec5408dc15dd2e2f94153fda85.jpg"},
     #LOGROS MENCIONES
