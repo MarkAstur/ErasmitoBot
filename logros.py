@@ -4,7 +4,7 @@ import discord
 import os
 
 LOGROS = [
-    {"nombre": "Enviado 1 mensaje", "condicion": lambda d: d["mensajes"] >= 1},
+    {"nombre": "Enviado 1 mensaje", "condicion": lambda d: d["mensajes"] >= 1, "imagen": "user.display_avatar.url"},
     {"nombre": "Enviado 100 mensajes", "condicion": lambda d: d["mensajes"] >= 100},
     {"nombre": "Enviado 500 mensajes", "condicion": lambda d: d["mensajes"] >= 500},
     {"nombre": "Primera reacción", "condicion": lambda d: d["reacciones"] >= 1},
@@ -63,10 +63,18 @@ async def asignar_logro(user, _, bot):
         canal = bot.get_channel(int(os.getenv("LOGROS_CHANNEL_ID")))
         if canal:
             for logro in nuevos:
+                logro_data = next((l for l in LOGROS if l["nombre"] == logro), None)
+                imagen_url = logro_data.get("imagen") if logro_data else None
+
                 embed = discord.Embed(
-                    title="🏆 ¡Nuevo logro desbloqueado!",
-                    description=f"**{user.display_name}** ha conseguido el logro:**{logro}**",
-                    color=discord.Color.gold()
-                )
-                embed.set_thumbnail(url=user.display_avatar.url)
-                await canal.send(embed=embed)
+                title="🏆 ¡Nuevo logro desbloqueado!",
+                description=f"**{user.display_name}** ha conseguido el logro:\n**{logro}**",
+                color=discord.Color.gold()
+    )
+
+    if imagen_url:
+        embed.set_thumbnail(url=imagen_url)
+    else:
+        embed.set_thumbnail(url=user.display_avatar.url)
+
+    await canal.send(embed=embed)
