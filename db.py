@@ -7,10 +7,13 @@ def iniciar_db():
         CREATE TABLE IF NOT EXISTS usuarios (
             user_id INTEGER PRIMARY KEY,
             mensajes INTEGER DEFAULT 0,
-            reacciones INTEGER DEFAULT 0
-            menciones INTEGER DEFAULT 0,
+            reacciones INTEGER DEFAULT 0,
             tiempo_total INTEGER DEFAULT 0
         )
+        CREATE TABLE IF NOT EXISTS estadisticas (
+            usuario_id INTEGER PRIMARY KEY,
+            menciones INTEGER DEFAULT 0
+);
     """)
     c.execute("""
         CREATE TABLE IF NOT EXISTS logros (
