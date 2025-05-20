@@ -18,6 +18,27 @@ async def on_ready():
     print(f"✅ Bot conectado como {bot.user}")
 
 @bot.event
+async def on_voice_state_update(member, before, after):
+    if before.channel is None and after.channel is not None:
+        # El usuario acaba de entrar a un canal de voz
+        user_id = member.id
+
+        conn = sqlite3.connect("logros.db")
+        c = conn.cursor()
+        c.execute("INSERT OR IGNORE INTO usuarios (user_id, voz) VALUES (?, 0)", (user_id,))
+        c.execute("SELECT voz FROM usuarios WHERE user_id = ?", (user_id,))
+        ya_entro = c.fetchone()[0]
+        if ya_entro == 0:
+            c.execute("UPDATE usuarios SET voz = 1 WHERE user_id = ?", (user_id,))
+            conn.commit()
+            conn.close()
+
+            # Ahora asigna el logro si corresponde
+            await asignar_logro(member, None, bot)
+        else:
+            conn.close()
+
+@bot.event
 async def on_message(message):
     if message.author.bot:
         return
