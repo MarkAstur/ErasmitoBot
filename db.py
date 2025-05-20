@@ -1,6 +1,16 @@
 
 import sqlite3
 
+def agregar_columna_voz_si_no_existe():
+    conn = sqlite3.connect("logros.db")
+    c = conn.cursor()
+    try:
+        c.execute("ALTER TABLE usuarios ADD COLUMN voz INTEGER DEFAULT 0")
+    except sqlite3.OperationalError:
+        pass  # Ya existe
+    conn.commit()
+    conn.close()
+
 def iniciar_db():
     conn = sqlite3.connect("logros.db")
     c = conn.cursor()
@@ -31,16 +41,6 @@ def iniciar_db():
     conn.close()
 
 agregar_columna_voz_si_no_existe()  # <- Añade esto aquí
-
-def agregar_columna_voz_si_no_existe():
-    conn = sqlite3.connect("logros.db")
-    c = conn.cursor()
-    try:
-        c.execute("ALTER TABLE usuarios ADD COLUMN voz INTEGER DEFAULT 0")
-    except sqlite3.OperationalError:
-        pass  # Ya existe
-    conn.commit()
-    conn.close()
 
 def incrementar_mensajes(user_id):
     conn = sqlite3.connect("logros.db")
