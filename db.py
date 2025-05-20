@@ -40,7 +40,7 @@ def iniciar_db():
     conn.commit()
     conn.close()
 
-agregar_columna_voz_si_no_existe()  # <- Añade esto aquí
+    agregar_columna_voz_si_no_existe()  # <- Añade esto aquí
 
 def incrementar_mensajes(user_id):
     conn = sqlite3.connect("logros.db")
