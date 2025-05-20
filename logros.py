@@ -17,7 +17,6 @@ LOGROS = [
     {"nombre": "Novato de la Voz - Mencionas a un Usuario", "condicion": lambda d: d.get("menciones", 0) >= 1, "imagen": "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/1689500/05f9c48a93e12754a31d03a1f1f52a4cbc254eb1.jpg"},
     #LOGROS ENTRAR CANALES
     {"nombre": "Uso de la Voz - Primera vez que entras en un canal de Voz", "condicion": lambda d: d.get("voz", 0) >= 1, "imagen": "https://static.wikia.nocookie.net/dune/images/8/8c/51oT6J972oL._SY445_-1.jpg"},
-}
 
 ]
 
