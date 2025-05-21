@@ -23,7 +23,7 @@ LOGROS = [
 def obtener_datos_usuario(user_id):
     conn = sqlite3.connect("logros.db")
     c = conn.cursor()
-    c.execute("SELECT mensajes, reacciones FROM usuarios WHERE user_id = ?", (user_id,))
+    c.execute("SELECT mensajes, reacciones, voz FROM usuarios WHERE user_id = ?", (user_id,))
     row1 = c.fetchone()
     c.execute("SELECT menciones FROM estadisticas WHERE usuario_id = ?", (user_id,))
     row2 = c.fetchone()
@@ -32,6 +32,7 @@ def obtener_datos_usuario(user_id):
     return {
         "mensajes": row1[0] if row1 else 0,
         "reacciones": row1[1] if row1 else 0,
+        "voz": row1[2] if row1 else 0,
         "menciones": row2[0] if row2 else 0
     }
 
