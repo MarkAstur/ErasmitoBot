@@ -13,6 +13,16 @@ intents.reactions = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 @bot.event
+async def on_member_update(before, after):
+    # Verifica si se ha añadido un nuevo rol
+    nuevos_roles = [role for role in after.roles if role not in before.roles]
+    
+    for rol in nuevos_roles:
+        if rol.name == "Dios Emperador":  # Reemplaza con el nombre exacto del rol que activa el logro
+            # Asigna el logro
+            await asignar_logro(after, "primer_rol", bot)
+
+@bot.event
 async def on_ready():
     iniciar_db()
     print(f"✅ Bot conectado como {bot.user}")
