@@ -24,7 +24,7 @@ LOGROS = [
     {"nombre": "Uso de la Voz - Primera vez que entras en un canal de Voz", "condicion": lambda d: d.get("voz", 0) >= 1, "imagen": "https://i.ibb.co/zHV0wLTq/00.png"},
     #LOGROS POR OBTENER UN ROL
     {"primer_rol": {"nombre": "Has sido elegido", "descripcion": "Recibiste tu primer rol en el servidor.", "imagen": "url_o_ruta_de_la_imagen.png"},
-
+}
 ]
 
 def obtener_datos_usuario(user_id):
